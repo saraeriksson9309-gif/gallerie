@@ -25,16 +25,16 @@
                 Willkommen in der Bildergalerie
             </h1>
             <p class="mt-3 text-lg text-gray-500">
-                Hier sehen Sie Ihre hochgeladenen Musterbilder.
+                Klicken Sie auf ein Bild, um die Lightbox zu öffnen und zu navigieren.
             </p>
         </header>
 
         <!-- Galerie Sektion (Responsives Grid) -->
         <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <!-- Bild 1: bild1.jpeg -->
-            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 1: bild1.jpeg</h2>
+            <!-- Bild 1: bild1.jpeg (Jetzt mit 'gallery-item' Klasse und klickbar) -->
+            <div class="gallery-item bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 cursor-pointer">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 1: Bild1.jpeg</h2>
                 <div class="aspect-video overflow-hidden rounded-lg bg-gray-200">
                     <!-- Platzhalterbild, das bild1.jpeg simuliert -->
                     <img 
@@ -49,9 +49,9 @@
                 </p>
             </div>
 
-            <!-- Bild 2: bild2.jpeg -->
-            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 2: bild2.jpeg</h2>
+            <!-- Bild 2: bild2.jpeg (Jetzt mit 'gallery-item' Klasse und klickbar) -->
+            <div class="gallery-item bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 cursor-pointer">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 2: Bild2.jpeg</h2>
                 <div class="aspect-video overflow-hidden rounded-lg bg-gray-200">
                     <!-- Platzhalterbild, das bild2.jpeg simuliert -->
                     <img 
@@ -66,11 +66,17 @@
                 </p>
             </div>
 
-            <!-- Optional: Ein dritter Platzhalter für das Layout -->
-            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hidden lg:block">
+            <!-- Optional: Ein dritter Platzhalter für das Layout (Auch klickbar) -->
+            <div class="gallery-item bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 cursor-pointer hidden lg:block">
                 <h2 class="text-xl font-semibold mb-3 text-gray-700">Platzhalter (Leer)</h2>
                 <div class="aspect-video overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
                    <span class="text-lg">Weitere Bilder folgen...</span>
+                   <!-- Hier ein Platzhalter-Bild mit Dummy-URL für die Lightbox-Funktion -->
+                    <img 
+                        src="https://placehold.co/800x600/6B7280/FFFFFF?text=Platzhalter" 
+                        alt="Ein Platzhalterbild" 
+                        class="w-0 h-0 opacity-0 absolute" 
+                    >
                 </div>
                 <p class="mt-3 text-sm text-gray-600">
                     Dies demonstriert die flexible Grid-Anordnung.
@@ -87,6 +93,147 @@
         </footer>
 
     </div>
+
+    <!-- Lightbox Modal (Fixed position, versteckt via 'hidden') -->
+    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex justify-center items-center hidden transition duration-300" onclick="closeLightbox()">
+        <div class="relative max-w-4xl max-h-full mx-auto p-4" onclick="event.stopPropagation()">
+            
+            <!-- Schließen-Button -->
+            <button onclick="closeLightbox()" class="absolute -top-10 right-0 sm:-top-12 sm:right-0 text-white text-4xl font-bold p-2 transition duration-300 hover:text-red-400 focus:outline-none z-50">
+                &times;
+            </button>
+            
+            <!-- Navigations-Buttons -->
+            <!-- "Zurück" Button -->
+            <button id="prev-button" onclick="prevImage()" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition duration-300 disabled:opacity-30 disabled:cursor-not-allowed">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <!-- "Weiter" Button -->
+            <button id="next-button" onclick="nextImage()" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition duration-300 disabled:opacity-30 disabled:cursor-not-allowed">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+            
+            <!-- Lightbox Bild -->
+            <img 
+                id="lightbox-image" 
+                class="max-w-full max-h-[90vh] w-auto h-auto rounded-lg shadow-2xl" 
+                src="" 
+                alt="Vergrößertes Bild"
+            >
+            
+            <!-- Bildunterschrift (Dateiname) -->
+            <p id="lightbox-caption" class="text-white text-center mt-4 text-base sm:text-lg font-semibold tracking-wide"></p>
+        </div>
+    </div>
+
+
+    <script>
+        // Variablen für Lightbox-Elemente und Galerie-Daten
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        
+        let galleryImages = []; // Speichert alle Bild-Objekte ({src, caption})
+        let currentImageIndex = 0; // Index des aktuell angezeigten Bildes
+
+        // Beim Laden des DOM die Bilddaten sammeln und Event-Listener hinzufügen
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Alle Bilderdaten sammeln
+            document.querySelectorAll('.gallery-item').forEach((item, index) => {
+                // Finde das Bild, indem das erste img-Tag im Element gesucht wird.
+                const imageElement = item.querySelector('img');
+                const captionElement = item.querySelector('h2');
+
+                if (imageElement && captionElement) {
+                    let imgSrc = imageElement.src;
+                    
+                    // Wir verwenden die beste verfügbare Auflösung für die Lightbox. 
+                    // Da wir Platzhalter verwenden, versuchen wir, auf 800x600 hochzuskalieren, falls nötig.
+                    const hdSrc = imgSrc.includes('600x400') ? imgSrc.replace('600x400', '800x600') : imgSrc;
+
+                    galleryImages.push({
+                        src: hdSrc,
+                        caption: captionElement.textContent,
+                    });
+
+                    // 2. Klick-Listener aktualisieren, um den Index zu übergeben
+                    item.addEventListener('click', () => {
+                        openLightbox(index);
+                    });
+                }
+            });
+        });
+
+        /**
+         * Zeigt ein spezifisches Bild in der Lightbox basierend auf dem Index an.
+         * @param {number} index - Der Index des anzuzeigenden Bildes in der galleryImages Liste.
+         */
+        function showImage(index) {
+            if (index >= 0 && index < galleryImages.length) {
+                currentImageIndex = index;
+                const imageData = galleryImages[index];
+
+                lightboxImage.src = imageData.src;
+                lightboxCaption.textContent = imageData.caption;
+
+                // Button-Sichtbarkeit aktualisieren (Deaktivieren am Anfang/Ende)
+                document.getElementById('prev-button').disabled = (currentImageIndex === 0);
+                document.getElementById('next-button').disabled = (currentImageIndex === galleryImages.length - 1);
+            }
+        }
+
+        /**
+         * Öffnet die Lightbox und zeigt das Bild mit dem Start-Index an.
+         * @param {number} index - Der Index des beim Öffnen anzuzeigenden Bildes.
+         */
+        function openLightbox(index) {
+            showImage(index);
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Verhindert Scrollen im Hintergrund
+        }
+
+        /**
+         * Schließt die Lightbox.
+         */
+        function closeLightbox() {
+            lightbox.classList.add('hidden');
+            lightboxImage.src = ''; // Quelle leeren
+            lightboxCaption.textContent = '';
+            document.body.style.overflow = ''; // Scrollen wieder aktivieren
+        }
+
+        /**
+         * Zeigt das nächste Bild in der Lightbox an.
+         */
+        function nextImage() {
+            if (currentImageIndex < galleryImages.length - 1) {
+                showImage(currentImageIndex + 1);
+            }
+        }
+
+        /**
+         * Zeigt das vorherige Bild in der Lightbox an.
+         */
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                showImage(currentImageIndex - 1);
+            }
+        }
+
+        // Schließt Lightbox bei Drücken der ESC-Taste
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+                closeLightbox();
+            } else if (!lightbox.classList.contains('hidden')) {
+                // Pfeiltasten-Navigation aktivieren
+                if (e.key === 'ArrowRight') {
+                    nextImage();
+                } else if (e.key === 'ArrowLeft') {
+                    prevImage();
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
