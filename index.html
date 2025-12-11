@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Bildergalerie</title>
+    <!-- Tailwind CSS CDN für schnelles und responsives Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Konfigurieren der 'Inter' Schriftart für eine moderne Ästhetik */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Hauptcontainer -->
+    <div class="container mx-auto p-4 sm:p-8">
+
+        <!-- Header Sektion -->
+        <header class="text-center py-12 mb-8 bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800">
+                Willkommen in der Bildergalerie
+            </h1>
+            <p class="mt-3 text-lg text-gray-500">
+                Hier sehen Sie Ihre hochgeladenen Musterbilder.
+            </p>
+        </header>
+
+        <!-- Galerie Sektion (Responsives Grid) -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Bild 1: bild1.jpeg -->
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 1: bild1.jpeg</h2>
+                <div class="aspect-video overflow-hidden rounded-lg bg-gray-200">
+                    <!-- Platzhalterbild, das bild1.jpeg simuliert -->
+                    <img 
+                        src="https://placehold.co/600x400/3182CE/FFFFFF?text=bild1.jpeg" 
+                        alt="Ein Platzhalter für das Bild bild1.jpeg" 
+                        class="w-full h-full object-cover transition duration-300 hover:scale-105"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x400/ccc/000?text=Ladefehler';"
+                    >
+                </div>
+                <p class="mt-3 text-sm text-gray-600">
+                    Dieses Bild wurde erfolgreich in die Galerie geladen.
+                </p>
+            </div>
+
+            <!-- Bild 2: bild2.jpeg -->
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">Bild 2: bild2.jpeg</h2>
+                <div class="aspect-video overflow-hidden rounded-lg bg-gray-200">
+                    <!-- Platzhalterbild, das bild2.jpeg simuliert -->
+                    <img 
+                        src="https://placehold.co/600x400/48BB78/FFFFFF?text=bild2.jpeg" 
+                        alt="Ein Platzhalter für das Bild bild2.jpeg" 
+                        class="w-full h-full object-cover transition duration-300 hover:scale-105"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x400/ccc/000?text=Ladefehler';"
+                    >
+                </div>
+                <p class="mt-3 text-sm text-gray-600">
+                    Ein weiteres Bild aus Ihrer Sammlung.
+                </p>
+            </div>
+
+            <!-- Optional: Ein dritter Platzhalter für das Layout -->
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hidden lg:block">
+                <h2 class="text-xl font-semibold mb-3 text-gray-700">Platzhalter (Leer)</h2>
+                <div class="aspect-video overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                   <span class="text-lg">Weitere Bilder folgen...</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-600">
+                    Dies demonstriert die flexible Grid-Anordnung.
+                </p>
+            </div>
+
+        </main>
+
+        <!-- Footer Sektion -->
+        <footer class="text-center mt-12 pt-8 border-t border-gray-200">
+            <p class="text-sm text-gray-500">
+                &copy; 2025 Mustergalerie | Erstellt mit Tailwind CSS
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
